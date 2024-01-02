@@ -1,8 +1,5 @@
-# React + Vite
+# Modulo de Proveedor con diseño de comercio electrónico, usando React y Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este repositorio esta el código asociado al diseño de la interfaz, desde las vistas de ingreso, registro, dashboard, manejo de inventario y obtención de recomendaciones.
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
