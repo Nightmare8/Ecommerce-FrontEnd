@@ -2,6 +2,7 @@ import './App.css'
 //Components
 import { CssBaseline, ThemeProvider} from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
+
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import LoginPage from './pages/loginPage/index.jsx';
 import Topbar from './pages/global/Topbar.jsx';
@@ -23,7 +24,6 @@ import { useSelector } from "react-redux";
 function App() {
   const [theme, colorMode] = useMode();
   const isAuth = Boolean(useSelector((state) => state.auth.token));
-  
   return (
     <ColorModeContext.Provider value={colorMode}>
       <BrowserRouter>

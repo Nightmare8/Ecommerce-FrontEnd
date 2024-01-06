@@ -4,8 +4,7 @@ import {
     Button,
     Stack,
     TextField,
-    Typography,  
-    colors,
+    Typography,
     Alert,
 } from "@mui/material"
 import { tokens } from "../../theme.js";
@@ -14,7 +13,6 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import Dropzone from "react-dropzone";
 //Routes
 import { userRoutes } from "../../api/config.js";
 import { setLogin } from "../../state/slices/authSlice.js";
@@ -43,10 +41,10 @@ const registerSchema = yup.object().shape({
 
 
 function Form() {
+  console.log("user routes", userRoutes)
   const [pageType, setPageType] = useState("login");
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  console.log(setLogin)
   let isLogin = pageType === "login";
   let isRegister = pageType === "register";
   const theme = useTheme();
@@ -81,6 +79,8 @@ function Form() {
   }
 
   const login = async (values, onSubmitProps) => {
+    console.log(import.meta.env.BACKEND_URL)
+    console.log("user routes", userRoutes.login)
     const loggedInResponse = await fetch(userRoutes.login, {
       method: "POST",
       headers: { "Content-Type": "application/json" },

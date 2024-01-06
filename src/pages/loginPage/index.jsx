@@ -1,6 +1,6 @@
-import { Box, Container, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { tokens } from "../../theme.js";
-import { styled, useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 import Form from "./Form.jsx";
 
 import ImageWelcoming from '../../assets/images/welcoming.svg';
