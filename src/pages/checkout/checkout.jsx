@@ -191,6 +191,7 @@ function Checkout() {
         console.log("values", values)
         console.log("item", item)
         const url = purchaseRoutes.buyProduct;
+        console.log("url de compra", url)
         const response = await fetch(url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
