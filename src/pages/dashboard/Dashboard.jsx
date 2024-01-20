@@ -10,6 +10,7 @@ import EmailIcon from "@mui/icons-material/Email";
 //Components
 import LineChartComponent from '../../components/LineChart.jsx';
 import PieChartComponent from '../../components/PieChart.jsx';
+import LoadingEffect from '../../components/LoadingEffect.jsx';
 
 function Dashboard() {
   const theme = useTheme();
@@ -27,17 +28,8 @@ function Dashboard() {
 
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-  })
-  if (loading) {
-    return (
-      <div className="custom-loader-container">
-        <div className="custom-loader"></div>
-      </div>
-    )
-  }
+    setLoading(false);
+  },[])
 
   return (
     <Box
@@ -62,37 +54,40 @@ function Dashboard() {
           </Button>
         </Box>
       </Box>
-      <Grid
-        container
-        sx={{
-          marginTop: '2%',
-          height: '80%',
-        }}
-        rowGap={1}
-        columnGap={1}
-      >
-        {/* Row 1 */}
+      {
+        loading ? <LoadingEffect /> : 
         <Grid
-          item
-          xs={12}
-          sm={8}
-          md={8}
-          lg={8}
-          sx={styles.item}
+          container
+          sx={{
+            marginTop: '2%',
+            height: '80%',
+          }}
+          rowGap={1}
+          columnGap={1}
         >
-          <LineChartComponent />
+          {/* Row 1 */}
+          <Grid
+            item
+            xs={12}
+            sm={8}
+            md={8}
+            lg={8}
+            sx={styles.item}
+          >
+            <LineChartComponent />
+          </Grid>
+          <Grid
+            item
+            xs={12}
+            sm={6}
+            md={3}
+            lg={3}
+            sx={styles.item}
+          >
+            <PieChartComponent />
+          </Grid>
         </Grid>
-        <Grid
-          item
-          xs={12}
-          sm={6}
-          md={3}
-          lg={3}
-          sx={styles.item}
-        >
-          <PieChartComponent />
-        </Grid>
-      </Grid>
+      }
     </Box>
   )
 }
