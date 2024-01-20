@@ -1,5 +1,5 @@
 import { Box, IconButton, useTheme, Alert, Stack, Typography, styled, Badge, Drawer, Button } from "@mui/material";
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useState, useRef } from "react";
 import { ColorModeContext, tokens } from "../../theme";
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
@@ -18,8 +18,7 @@ import Tab from '@mui/material/Tab';
 //Redux state
 import { useDispatch, useSelector } from "react-redux";
 import { setLogout } from "../../state/slices/authSlice";
-import { Link} from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation} from "react-router-dom";
 
 
 const StyledTabs = styled((Tabs))(({ theme }) => ({
@@ -42,9 +41,22 @@ function Topbar() {
   const dispatch = useDispatch();
 
   const cart = useSelector((state) => state.cart.cart);
-  console.log("cart", cart)
+  
   //Tab component
-  const [value, setValue] = useState(0);
+  const location = useLocation();
+  const getTab = () => {
+    if (location.pathname === '/home') return 0;
+    if (location.pathname === '/catalog') return 1;
+    if (location.pathname === '/register') return 2;
+    if (location.pathname === '/inventory') return 3;
+    if (location.pathname === '/company') return 4;
+    else return 0;
+  }
+  const value = useRef(getTab())
+  
+  const setValue = (newValue) => {
+    value.current = newValue;
+  }
   const handleChange = (event ,newValue) =>{
     setValue(newValue);
   }
@@ -137,7 +149,7 @@ function Topbar() {
           }}
         >
           <StyledTabs
-            value={value}
+            value={value.current}
             onChange={handleChange}
             textColor="inherit"
             indicatorColor="primary"

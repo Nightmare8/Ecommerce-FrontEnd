@@ -1,7 +1,5 @@
 import { Box } from "@mui/material"
 import { useState, useEffect } from "react";
-import { tokens } from "../../theme.js";
-import { useTheme } from '@mui/material/styles';
 import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
@@ -18,11 +16,12 @@ import Products from "./products.jsx";
 //User
 import { useSelector } from "react-redux";
 import Users from "./users.jsx";
+//Components
+import LoadingEffect from "../../components/LoadingEffect.jsx";
+//Routes
+import { companyRoutes } from "../../api/config.js";
 
 function Company() {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-
   const [value, setValue] = useState('1');
 
   const handleChange = (event, newValue) => {
@@ -42,9 +41,11 @@ function Company() {
         workers: 0,
     }
   });
-
+  //Loading
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
-    const url = 'http://localhost:3000/company/';
+    setLoading(true);
+    const url = companyRoutes.getCompany;
     fetch(url,{
         method: 'POST',
         headers: {  'Content-Type': 'application/json'},
@@ -54,8 +55,8 @@ function Company() {
     then(data => {
         setCompanyDats(data);
     }).
-    catch(error => console.log(error));
-  },[])
+    catch(error => console.log(error)).finally(() => setLoading(false));
+  },[user.company])
 
   return (
     <Box
@@ -88,29 +89,36 @@ function Company() {
             width: '100%',
           }}
         >
-          <Settings  companyDats={companyDats} setCompanyDats={setCompanyDats}/>
+          {
+            loading ? <LoadingEffect /> : <Settings  companyDats={companyDats} setCompanyDats={setCompanyDats}/>
+          }
         </TabPanel>
         <TabPanel value={'2'}
           sx = {{
             width: '100%',
           }}
         >
-          <Preferences companyDats = {companyDats} setCompanyDats={setCompanyDats}  />
+          {
+            loading ? <LoadingEffect /> : <Preferences companyDats = {companyDats} setCompanyDats={setCompanyDats}  />
+          }
         </TabPanel>
         <TabPanel value={'3'}
           sx = {{
             width: '100%',
           }}
         >
-          <Products companyDats = {companyDats} setCompanyDats={setCompanyDats} />
+          {
+            loading ? <LoadingEffect /> : <Products companyDats = {companyDats} setCompanyDats={setCompanyDats} />
+          }
         </TabPanel>
         <TabPanel value={'4'}
           sx = {{
             width: '100%',
           }}
         >
-          <Users companyDats = {companyDats} setCompanyDats={setCompanyDats} />
-          
+          {
+            loading ? <LoadingEffect /> : <Users companyDats = {companyDats} setCompanyDats={setCompanyDats} />
+          }
         </TabPanel>
       </Box>
       </TabContext>

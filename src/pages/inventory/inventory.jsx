@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
-import React from 'react';
 import Header from '../../components/Header'
-import { ColorModeContext, tokens } from "../../theme.js";
 import { useTheme } from '@mui/material/styles';
 import { Box, Button, Stack } from '@mui/material';
 //Icons
@@ -9,6 +7,7 @@ import AddBoxIcon from '@mui/icons-material/AddBox';
 //Componentes
 import AddDialog from './addDialog';
 import TabBody from '../../components/TabBody';
+import LoadingEffect from '../../components/LoadingEffect.jsx';
 //Api
 import { productRoutes } from "../../api/config.js";
 //Redux
@@ -69,16 +68,16 @@ const headCells = [
 
 function Inventory() {
     const theme = useTheme();
-    const colors = tokens(theme.palette.mode);
     //User 
     const user = useSelector((state) => state.auth.user);
     //Stock
     const [rows, setRows] = useState([]);
+    //Loading
+    const [loading, setLoading] = useState(true);
     //Use effect
-    const url = productRoutes.get + user.company;
-    console.log("url", url)
-    console.log(rows)
     useEffect(() => {
+        setLoading(true);
+        let url = productRoutes.get + user.company;
         fetch(url, {
             method: "GET",
             headers: {
@@ -90,8 +89,8 @@ function Inventory() {
         }).then(data => {
             console.log("data", data)
             setRows(data);
-        }).catch(error => console.log(error));
-    }, [])
+        }).catch(error => console.log(error)).finally(() => setLoading(false));
+    }, [user.company])
 
     //Form Dialog
     const [open, setOpen] = useState(false);
@@ -143,15 +142,17 @@ function Inventory() {
                 </Stack>
                 <AddDialog open={open} handleClose={handleClose} />
             </Box>
-            {/* Listado Inventario */}
-            <Box
-                display={'flex'}
-                justifyContent={'space-between'}
-                paddingTop={1}
-                width={'100%'}
-            >
-                <TabBody rows={rows} setRows ={setRows} headCellsAux={headCells}/>
-            </Box>
+            {
+                loading ? <LoadingEffect /> :
+                    <Box
+                        display={'flex'}
+                        justifyContent={'space-between'}
+                        paddingTop={1}
+                        width={'100%'}
+                    >
+                        <TabBody rows={rows} setRows={setRows} headCellsAux={headCells} />
+                    </Box>
+            }
         </Box>
     )
 }

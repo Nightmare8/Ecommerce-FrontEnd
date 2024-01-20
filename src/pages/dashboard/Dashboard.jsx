@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import {useState, useEffect } from 'react'
 import Header from '../../components/Header'
 import { Box, Typography, IconButton } from '@mui/material'
 import Grid from '@mui/material/Grid';
@@ -24,6 +24,21 @@ function Dashboard() {
       padding: '1%',
     }
   }
+
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  })
+  if (loading) {
+    return (
+      <div className="custom-loader-container">
+        <div className="custom-loader"></div>
+      </div>
+    )
+  }
+
   return (
     <Box
       paddingX={2}

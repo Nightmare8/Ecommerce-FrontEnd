@@ -1,4 +1,6 @@
 import './App.css'
+//React
+import { useState, useEffect } from 'react';
 //Components
 import { CssBaseline, ThemeProvider} from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
@@ -16,21 +18,34 @@ import Inventory from './pages/inventory/index.jsx';
 import Company from './pages/company/company.jsx';
 import Start from './pages/start/start.jsx';
 import Checkout from './pages/checkout/checkout.jsx';
+import LoadingEffect from './components/LoadingEffect.jsx';
 //Redux
 import { useSelector } from "react-redux";
-
-
 
 function App() {
   const [theme, colorMode] = useMode();
   const isAuth = Boolean(useSelector((state) => state.auth.token));
+
+  //Loading 
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  },[])
+  if (loading) {
+    return (
+      <LoadingEffect/>
+    )
+  }
+
   return (
     <ColorModeContext.Provider value={colorMode}>
       <BrowserRouter>
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <div className="app">
-            
             {isAuth && <Topbar/>}
             <main className='content'>
               <Routes>

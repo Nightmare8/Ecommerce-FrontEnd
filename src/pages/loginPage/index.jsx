@@ -8,6 +8,7 @@ import ImageWelcoming from '../../assets/images/welcoming.svg';
 function LoginPage() {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  console.log("prueba de console ninja")
   return (
     <Box
       sx = {{

@@ -13,6 +13,7 @@ import { useSelector } from "react-redux";
 import AddBoxIcon from '@mui/icons-material/AddBox';
 //Api
 import { purchaseRoutes } from '../../api/config.js';
+import LoadingEffect from '../../components/LoadingEffect.jsx';
 
 const headCells = [
     {
@@ -48,19 +49,20 @@ function Register() {
     const user = useSelector((state) => state.auth.user);
     //Stock
     const [rows, setRows] = useState([]);
-    console.log("rows", rows)
+    //Loading
+    const [loading, setLoading] = useState(true);
     //Obtain de registers
     useEffect(() => {
+        setLoading(true);
         const url = purchaseRoutes.getPurchase + user.company;
-        console.log("url", url)
+        
         fetch(url)
             .then((response) => response.json())
             .then((data) => {
-                console.log("data", data)
                 setRows(data)
             })
-            .catch((error) => console.log(error));
-    }, [])
+            .catch((error) => console.log(error)).finally(() => setLoading(false));
+    }, [user.company])
     //Dialog for charge registers
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
@@ -106,14 +108,18 @@ function Register() {
                 </Stack>
                 <DialogRegister open={open} onClose={handleClose} />
             </Box>
-            <Box
-                display={'flex'}
-                justifyContent={'space-between'}
-                paddingTop={1}
-                width={'100%'}
-            >
-                <TabBody headCells={headCells} rows={rows} headCellsAux={headCells}/>
-            </Box>
+            {
+                loading ?
+                <LoadingEffect /> :
+                <Box
+                    display={'flex'}
+                    justifyContent={'space-between'}
+                    paddingTop={1}
+                    width={'100%'}
+                >
+                    <TabBody headCells={headCells} rows={rows} headCellsAux={headCells}/>
+                </Box>
+            }
         </Box>
     )
 }

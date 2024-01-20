@@ -46,6 +46,8 @@ import { useTheme } from '@mui/material/styles';
 import { useDispatch } from "react-redux";
 import { addProduct } from './../../state/slices/cartSlice.js';
 import Header from '../../components/Header.jsx';
+//Componentes
+import LoadingEffect from '../../components/LoadingEffect.jsx';
 //Api
 import { pythonRoutes } from '../../api/config.js';
 
@@ -68,33 +70,6 @@ const filterProducts = (products) => {
   console.log("filteredProducts", filteredProducts)
   return filteredProducts;
 }
-
-// const getImageProduct = (name) => {
-//   if (name === 'telefono') {
-//     return ImagenTelefono;
-//   } else if (name === 'camara') {
-//     return ImagenCamara;
-//   } else if (name === 'notebook') {
-//     return ImagenNotebook;
-//   } else if (name === 'tablet') {
-//     return ImagenTablet;
-//   } else if (name === 'consola') {
-//     return ImagenConsola;
-//   }
-// }
-
-// const handleImageCategory = (category) => {
-//   if (category === 'MLC9240') {
-//     return ImagenCargadores;
-//   } else if (category === 'MLC5068') {
-//     return ImagenBaterias;
-//   } else if (category === 'MLC1672') {
-//     return ImagenDiscos;
-//   } else {
-//     return ImagenTelefono;
-//   }
-// }
-
 const handleStock = (stock) => {
   if (stock == 1) {
     return 'Entre 1 y 50'
@@ -149,6 +124,8 @@ const transformPorcentaje = (value) => {
   return value * 100;
 }
 
+
+
 function Catalog() {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -180,7 +157,7 @@ function Catalog() {
   //Obtener recomendacion
   const [showRecommendation, setShowRecommendation] = useState(false);
   const [recommendationList, setRecommendationList] = useState([{}]);
-  console.log("recommendationList", recommendationList)
+  
   //Dialog functions
   const [openDialog, setOpenDialog] = useState(false);
   const handleOpenDialog = () => setOpenDialog(true);
@@ -201,7 +178,11 @@ function Catalog() {
     console.log("newValue", newValue)
     setValue(newValue);
   }
+  //Loading
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
+    setLoading(true);
     const url = pythonRoutes.getProductsCategories + '/' + categorias[value].id;
     console.log(url)
     fetch(url, {
@@ -210,7 +191,6 @@ function Catalog() {
         'Content-Type': 'application/json'
       }
     }).then((response) => {
-      console.log("response", response)
       return response.json();
     }).then((data) => {
       console.log("data", data)
@@ -219,9 +199,13 @@ function Catalog() {
       setShowRecommendation(false);
     }).catch((error) => {
       console.log("error", error)
+    }).finally(() => {
+      setLoading(false);
     })
   }, [value])
-  console.log(products[0])
+
+
+
   return (
     <Box
       paddingY={2}
@@ -271,179 +255,182 @@ function Catalog() {
         <DialogRecommendation open={openDialog} onClose={handleCloseDialog} addCart={addCart} setShowRecommendation={setShowRecommendation} setRecommendationList={setRecommendationList} />
         <DialogProduct open={openDialogProduct} handleClose={handleCloseDialogProduct} addCart={addCart} product={showProduct} />
       </Box>
-      <Box>
-        {showRecommendation &&
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              marginBottom: 2,
-            }}
-          >
-            <Typography variant={'h3'} sx={{ color: colors.primary.main }} fontWeight={'bold'} >
-              Recomendaciones
-            </Typography>
-          </Box>
-        }
-        <Grid container spacing={2}>
-          {showRecommendation ?
-            recommendationList.map((item, index) => (
-              <Grid item
-                xs={12}
-                md={4}
-                lg={2}
-                xl={1}
-                key={index}
-              >
-                <Card
-                  sx={{
-                    maxWidth: 400,
-                    width: '100%'
-                  }}
-                >
-                  <CardActionArea onClick={() => {
-                    setShowProduct(item);
-                    handleOpenDialogProduct();
-                  }}   >
-                    <CardMedia
-                      component={'img'}
-                      height={'200'}
-                      image={
-                        item.info.imagen
-                      }
-                      alt='imagenTelefono'
-                    />
-                    <CardContent
-                      sx={{
-                        paddingBottom: 0
-                      }}
-                    >
-                      <Typography variant={'h3'} component={'div'}>
-                        $ {item.info.precio}
-                      </Typography>
-                      <Typography variant={'h5'}>
-                        {item.info.titulo} {item.info.BRAND} {item.info.MODEL}
-                      </Typography>
-                      <Typography variant={'h5'} >
-                        Disponibles: {handleStock(item.info.stock)}
-                      </Typography>
-                      <Typography variant={'h5'} fontWeight={'bold'} >
-                        {/* Mostrar solo dos decimales */}
-                        Similitud con usuario: {transformPorcentaje(item.similitud.toFixed(2))} %
-                      </Typography>
-                      {/* <Rating name="read-only" value={item.calificacion} readOnly /> */}
-                    </CardContent>
-                  </CardActionArea>
-                  <CardActions
-                    sx={{
-                      display: 'flex',
-                      justifyContent: 'space-between'
-                    }}
-                  >
-                    <IconButton
-                      onClick={() =>
-                        setFavourite(item)
-                      }
-                    >
-                      <FavoriteBorderIcon />
-                    </IconButton>
-                    <IconButton
-                      color='primary'
-                      onClick={() =>
-                        addCart(item, 1)
-                      }
-                    >
-                      <AddShoppingCartIcon />
-                    </IconButton>
-                  </CardActions>
-                </Card>
-              </Grid>
-            )) : products.slice(0, visibleProducts).map((item, index) => (
-              <Grid item
-                xs={12}
-                md={4}
-                lg={2}
-                xl={1}
-                key={index}
-              >
-                <Card
-                  sx={{
-                    maxWidth: 300
-                  }}
-                >
-                  <CardActionArea onClick={() => {
-                    setShowProduct(item);
-                    handleOpenDialogProduct();
-                  }}   >
-                    <CardMedia
-                      component={'img'}
-                      height={'200'}
-                      image={
-                        item.imagen
-                      }
-                      alt='imagenTelefono'
-                    />
-                    <CardContent
-                      sx={{
-                        paddingBottom: 0
-                      }}
-                    >
-                      <Typography variant={'h3'} component={'div'}>
-                        $ {item.precio}
-                      </Typography>
-                      <Typography variant={'h5'}>
-                        {item.titulo} {item.BRAND} {item.LINE}
-                      </Typography>
-                      <Typography variant={'h5'}>
-                        Disponibles: {handleStock(item.stock)}
-                      </Typography>
-                      {/* <Rating name="read-only" value={item.calificacion} readOnly /> */}
-                    </CardContent>
-                  </CardActionArea>
-                  <CardActions
-                    sx={{
-                      display: 'flex',
-                      justifyContent: 'space-between'
-                    }}
-                  >
-                    <IconButton
-                      onClick={() =>
-                        setFavourite(item)
-                      }
-                    >
-                      <FavoriteBorderIcon />
-                    </IconButton>
-                    <IconButton
-                      color='primary'
-                      onClick={() =>
-                        addCart(item, 1)
-                      }
-                    >
-                      <AddShoppingCartIcon />
-                    </IconButton>
-                  </CardActions>
-                </Card>
-              </Grid>
-            ))
+      {
+        loading ? <LoadingEffect /> : 
+        <Box>
+          {showRecommendation &&
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                marginBottom: 2,
+              }}
+            >
+              <Typography variant={'h3'} sx={{ color: colors.primary.main }} fontWeight={'bold'} >
+                Recomendaciones
+              </Typography>
+            </Box>
           }
-          {visibleProducts < products.length && !showRecommendation && (
-            <Grid item xs={12} container justifyContent={'center'}>
-              <Button
-                variant="contained"
-                startIcon={<KeyboardDoubleArrowDownIcon />}
-                sx={{
-                  backgroundColor: theme.palette.button.main,
-                  height: '100%',
-                }}
-                onClick={() => setVisibleProducts(visibleProducts + 20)}
-              >
-                Ver mas productos
-              </Button>
-            </Grid>
-          )}
-        </Grid>
+          <Grid container spacing={2}>
+            {showRecommendation ?
+              recommendationList.map((item, index) => (
+                <Grid item
+                  xs={12}
+                  md={4}
+                  lg={2}
+                  xl={1}
+                  key={index}
+                >
+                  <Card
+                    sx={{
+                      maxWidth: 400,
+                      width: '100%'
+                    }}
+                  >
+                    <CardActionArea onClick={() => {
+                      setShowProduct(item);
+                      handleOpenDialogProduct();
+                    }}   >
+                      <CardMedia
+                        component={'img'}
+                        height={'200'}
+                        image={
+                          item.info.imagen
+                        }
+                        alt='imagenTelefono'
+                      />
+                      <CardContent
+                        sx={{
+                          paddingBottom: 0
+                        }}
+                      >
+                        <Typography variant={'h3'} component={'div'}>
+                          $ {item.info.precio}
+                        </Typography>
+                        <Typography variant={'h5'}>
+                          {item.info.titulo} {item.info.BRAND} {item.info.MODEL}
+                        </Typography>
+                        <Typography variant={'h5'} >
+                          Disponibles: {handleStock(item.info.stock)}
+                        </Typography>
+                        <Typography variant={'h5'} fontWeight={'bold'} >
+                          {/* Mostrar solo dos decimales */}
+                          Similitud con usuario: {transformPorcentaje(item.similitud.toFixed(2))} %
+                        </Typography>
+                        {/* <Rating name="read-only" value={item.calificacion} readOnly /> */}
+                      </CardContent>
+                    </CardActionArea>
+                    <CardActions
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between'
+                      }}
+                    >
+                      <IconButton
+                        onClick={() =>
+                          setFavourite(item)
+                        }
+                      >
+                        <FavoriteBorderIcon />
+                      </IconButton>
+                      <IconButton
+                        color='primary'
+                        onClick={() =>
+                          addCart(item, 1)
+                        }
+                      >
+                        <AddShoppingCartIcon />
+                      </IconButton>
+                    </CardActions>
+                  </Card>
+                </Grid>
+              )) : products.slice(0, visibleProducts).map((item, index) => (
+                <Grid item
+                  xs={12}
+                  md={4}
+                  lg={2}
+                  xl={1}
+                  key={index}
+                >
+                  <Card
+                    sx={{
+                      maxWidth: 300
+                    }}
+                  >
+                    <CardActionArea onClick={() => {
+                      setShowProduct(item);
+                      handleOpenDialogProduct();
+                    }}   >
+                      <CardMedia
+                        component={'img'}
+                        height={'200'}
+                        image={
+                          item.imagen
+                        }
+                        alt='imagenTelefono'
+                      />
+                      <CardContent
+                        sx={{
+                          paddingBottom: 0
+                        }}
+                      >
+                        <Typography variant={'h3'} component={'div'}>
+                          $ {item.precio}
+                        </Typography>
+                        <Typography variant={'h5'}>
+                          {item.titulo} {item.BRAND} {item.LINE}
+                        </Typography>
+                        <Typography variant={'h5'}>
+                          Disponibles: {handleStock(item.stock)}
+                        </Typography>
+                        {/* <Rating name="read-only" value={item.calificacion} readOnly /> */}
+                      </CardContent>
+                    </CardActionArea>
+                    <CardActions
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between'
+                      }}
+                    >
+                      <IconButton
+                        onClick={() =>
+                          setFavourite(item)
+                        }
+                      >
+                        <FavoriteBorderIcon />
+                      </IconButton>
+                      <IconButton
+                        color='primary'
+                        onClick={() =>
+                          addCart(item, 1)
+                        }
+                      >
+                        <AddShoppingCartIcon />
+                      </IconButton>
+                    </CardActions>
+                  </Card>
+                </Grid>
+              ))
+            }
+            {visibleProducts < products.length && !showRecommendation && (
+              <Grid item xs={12} container justifyContent={'center'}>
+                <Button
+                  variant="contained"
+                  startIcon={<KeyboardDoubleArrowDownIcon />}
+                  sx={{
+                    backgroundColor: theme.palette.button.main,
+                    height: '100%',
+                  }}
+                  onClick={() => setVisibleProducts(visibleProducts + 20)}
+                >
+                  Ver mas productos
+                </Button>
+              </Grid>
+            )}
+          </Grid>
 
-      </Box>
+        </Box>
+      }
       <Snackbar
         open={open}
         autoHideDuration={6000}
