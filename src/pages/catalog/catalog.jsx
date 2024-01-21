@@ -50,6 +50,7 @@ import Header from '../../components/Header.jsx';
 import LoadingEffect from '../../components/LoadingEffect.jsx';
 //Api
 import { pythonRoutes } from '../../api/config.js';
+import RatingCatalog from '../../components/RatingCatalog.jsx';
 
 const filterProducts = (products) => {
   const uniquesNames = new Set();
@@ -123,7 +124,6 @@ const categorias = [{
 const transformPorcentaje = (value) => {
   return value * 100;
 }
-
 
 
 function Catalog() {
@@ -313,10 +313,7 @@ function Catalog() {
                         <Typography variant={'h5'} >
                           Disponibles: {handleStock(item.info.stock)}
                         </Typography>
-                        <Typography variant={'h5'} fontWeight={'bold'} >
-                          {/* Mostrar solo dos decimales */}
-                          Similitud con usuario: {transformPorcentaje(item.similitud.toFixed(2))} %
-                        </Typography>
+                        <RatingCatalog value={transformPorcentaje(item.similitud.toFixed(2))} />
                         {/* <Rating name="read-only" value={item.calificacion} readOnly /> */}
                       </CardContent>
                     </CardActionArea>
