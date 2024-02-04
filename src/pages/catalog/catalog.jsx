@@ -287,10 +287,12 @@ function Catalog() {
                       width: '100%'
                     }}
                   >
-                    <CardActionArea onClick={() => {
-                      setShowProduct(item);
-                      // handleOpenDialogProduct();
-                    }}   >
+                    <CardActionArea 
+                      // onClick={() => {
+                      //   setShowProduct(item);
+                      //   handleOpenDialogProduct();
+                      // }}   
+                    >
                       <CardMedia
                         component={'img'}
                         height={'200'}
