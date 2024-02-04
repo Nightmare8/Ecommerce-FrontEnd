@@ -289,7 +289,7 @@ function Catalog() {
                   >
                     <CardActionArea onClick={() => {
                       setShowProduct(item);
-                      handleOpenDialogProduct();
+                      // handleOpenDialogProduct();
                     }}   >
                       <CardMedia
                         component={'img'}
