@@ -356,10 +356,12 @@ function Catalog() {
                       maxWidth: 300
                     }}
                   >
-                    <CardActionArea onClick={() => {
-                      setShowProduct(item);
-                      handleOpenDialogProduct();
-                    }}   >
+                    <CardActionArea 
+                    // onClick={() => {
+                    //   setShowProduct(item);
+                    //   handleOpenDialogProduct();
+                    // }}   
+                    >
                       <CardMedia
                         component={'img'}
                         height={'200'}
